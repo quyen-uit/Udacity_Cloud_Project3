@@ -1,0 +1,23 @@
+# This config was automatically generated from your source code
+version: 2.1
+
+jobs:
+  build-and-push:
+    docker:
+      - image: circleci/python:3.8
+    environment:      
+      DOCKERHUB_PASSWORD: $DOCKER_PASSWORD
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build and push images to dockerhub
+          command: |
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker-compose -f docker-compose-build.yaml build --parallel
+            docker-compose -f docker-compose-build.yaml push
+
+workflows:
+  build-workflow:
+    jobs:
+      - build-and-push
